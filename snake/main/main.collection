@@ -1,0 +1,14 @@
+name: "main"
+scale_along_z: 0
+embedded_instances {
+  id: "grid"
+  data: "components {\n"
+  "  id: \"grid\"\n"
+  "  component: \"/main/grid.tilemap\"\n"
+  "}\n"
+  "components {\n"
+  "  id: \"snake\"\n"
+  "  component: \"/src/game_objects/snake.script\"\n"
+  "}\n"
+  ""
+}

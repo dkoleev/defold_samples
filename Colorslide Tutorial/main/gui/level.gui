@@ -1,0 +1,151 @@
+script: "/src/gui/level.gui_script"
+fonts {
+  name: "headings"
+  font: "/assets/headings.font"
+}
+textures {
+  name: "bricks"
+  texture: "/assets/bricks.atlas"
+}
+nodes {
+  position {
+    x: 111.0
+    y: 53.0
+  }
+  size {
+    x: 180.0
+    y: 80.0
+  }
+  type: TYPE_BOX
+  id: "button_back"
+  inherit_alpha: true
+  alpha: 0.0
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 180.0
+    y: 80.0
+  }
+  type: TYPE_BOX
+  texture: "bricks/button"
+  id: "button_back_bg"
+  parent: "button_back"
+  slice9 {
+    x: 40.0
+    y: 40.0
+    z: 40.0
+    w: 40.0
+  }
+}
+nodes {
+  size {
+    x: 160.0
+    y: 60.0
+  }
+  type: TYPE_TEXT
+  text: "Back"
+  font: "headings"
+  id: "button_back_text"
+  parent: "button_back_bg"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 320.0
+    y: 1106.0
+  }
+  size {
+    x: 200.0
+    y: 50.0
+  }
+  type: TYPE_TEXT
+  text: "LEVEL [NUMBER]"
+  font: "headings"
+  id: "header"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    x: 889.0
+    y: 608.0
+  }
+  size {
+    x: 400.0
+    y: 250.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_BOX
+  id: "well_done_message"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    y: 68.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.0
+    y: 0.5019608
+    z: 0.0
+  }
+  type: TYPE_TEXT
+  text: "Well Done!"
+  font: "headings"
+  id: "well_done_message_text"
+  parent: "well_done_message"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    y: -53.0
+  }
+  size {
+    x: 180.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  id: "button_next_level"
+  parent: "well_done_message"
+  inherit_alpha: true
+  alpha: 0.0
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 180.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  texture: "bricks/green"
+  id: "button_next_level_bg"
+  parent: "button_next_level"
+  slice9 {
+    x: 40.0
+    y: 40.0
+    z: 40.0
+    w: 40.0
+  }
+}
+nodes {
+  size {
+    x: 160.0
+    y: 80.0
+  }
+  type: TYPE_TEXT
+  text: "Next"
+  font: "headings"
+  id: "button_next_level_text"
+  parent: "button_next_level_bg"
+  inherit_alpha: true
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

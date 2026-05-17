@@ -1,0 +1,24 @@
+local msg_ids = require("src.modules.msg_ids")
+local action_ids = require("src.modules.action_ids")
+
+function on_message(self, message_id, message, sender)
+	if message_id == msg_ids.LEVEL_COMPLETED then
+		local well_done_obj = gui.get_node("well_done_message")
+		gui.animate(well_done_obj, "position.x", 320, gui.EASING_OUTSINE, 1, 1.5) 
+	end
+end
+
+function on_input(self, action_id, action)
+	if action_id == action_ids.TOUCH and action.pressed then
+		local button_back = gui.get_node("button_back")
+		if gui.pick_node(button_back, action.x, action.y) then
+			msg.post("default:/gui#level_select", msg_ids.SHOW_LEVEL_SELECT)
+			msg.post("default:/loader#loader", msg_ids.UNLOAD_LEVEL)
+		end
+
+		local button_next = gui.get_node("button_next_level")
+		if gui.pick_node(button_next, action.x, action.y) then
+			msg.post("default:/loader#loader", msg_ids.NEXT_LEVEL)
+		end
+	end
+end

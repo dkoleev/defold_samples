@@ -1,0 +1,92 @@
+script: "/src/gui/start.gui_script"
+fonts {
+  name: "headings"
+  font: "/assets/headings.font"
+}
+textures {
+  name: "bricks"
+  texture: "/assets/bricks.atlas"
+}
+nodes {
+  position {
+    x: 320.0
+    y: 608.0
+  }
+  size {
+    x: 400.0
+    y: 600.0
+  }
+  color {
+    x: 0.8
+    y: 0.8
+    z: 0.8
+  }
+  type: TYPE_BOX
+  id: "welcome"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    y: 74.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  color {
+    x: 0.0
+    y: 0.5019608
+    z: 0.0
+  }
+  type: TYPE_TEXT
+  text: "Welcome"
+  font: "headings"
+  id: "welcome_text"
+  parent: "welcome"
+  inherit_alpha: true
+}
+nodes {
+  type: TYPE_TEMPLATE
+  id: "button_start"
+  parent: "welcome"
+  inherit_alpha: true
+  template: "/main/gui/templates/button_template.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "button_start/button"
+  parent: "button_start"
+  template_node_child: true
+}
+nodes {
+  type: TYPE_BOX
+  id: "button_start/button_bg"
+  parent: "button_start/button"
+  template_node_child: true
+}
+nodes {
+  type: TYPE_TEXT
+  text: "Start"
+  id: "button_start/button_text"
+  parent: "button_start/button_bg"
+  overridden_fields: 8
+  template_node_child: true
+}
+nodes {
+  position {
+    x: 320.0
+    y: 1005.0
+  }
+  scale {
+    x: 0.5
+    y: 0.5
+  }
+  type: TYPE_BOX
+  texture: "bricks/logo"
+  id: "logo"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+}
+material: "/builtins/materials/gui.material"
+adjust_reference: ADJUST_REFERENCE_PARENT

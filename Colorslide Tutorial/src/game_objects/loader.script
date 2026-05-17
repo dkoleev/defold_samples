@@ -1,0 +1,26 @@
+local msg_ids = require("src.modules.msg_ids")
+
+function init(self)
+	msg.post(".", msg_ids.ACQUIRE_INPUT_FOCUS)
+
+	self.current_level = 0
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == msg_ids.LOAD_LEVEL then
+		self.current_level = message.level
+		local proxy_id = "#proxy_level_" .. message.level
+		msg.post(proxy_id, msg_ids.LOAD)
+	elseif message_id == msg_ids.NEXT_LEVEL then
+		msg.post("#", msg_ids.UNLOAD_LEVEL)
+		msg.post("#", msg_ids.LOAD_LEVEL, {level = self.current_level + 1})
+	elseif message_id == msg_ids.UNLOAD_LEVEL then
+		local proxy = "#proxy_level_" .. self.current_level
+		msg.post(proxy, msg_ids.DISABLE)
+		msg.post(proxy, msg_ids.FINAL)
+		msg.post(proxy, msg_ids.UNLOAD)
+	elseif message_id == msg_ids.PROXY_LOADED  then
+		msg.post(sender, msg_ids.INIT)
+		msg.post(sender, msg_ids.ENABLE)
+	end
+end

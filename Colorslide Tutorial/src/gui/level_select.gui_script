@@ -1,0 +1,32 @@
+local msg_ids = require("src.modules.msg_ids")
+local action_ids = require("src.modules.action_ids")
+
+function init(self)
+	msg.post(".", msg_ids.ACQUIRE_INPUT_FOCUS)
+	msg.post("#", msg_ids.HIDE_LEVEL_SELECT)
+
+	self.active = false
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == msg_ids.SHOW_LEVEL_SELECT then
+		msg.post("#", msg_ids.ENABLE)
+		self.active = true
+	elseif message_id == msg_ids.HIDE_LEVEL_SELECT then
+		msg.post("#", msg_ids.DISABLE)
+		self.active = false
+	end
+end
+
+function on_input(self, action_id, action)
+	if action_id == action_ids.TOUCH and action.pressed and self.active then
+		for n = 1, 4 do
+			local node = gui.get_node("button_level_" .. n)
+
+			if gui.pick_node(node, action.x, action.y) then
+				msg.post("/loader#loader", msg_ids.LOAD_LEVEL, {level = n})
+				msg.post("#", msg_ids.HIDE_LEVEL_SELECT)
+			end
+		end
+	end
+end

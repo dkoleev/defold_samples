@@ -1,0 +1,18 @@
+function init(self)
+	self.score = 0
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("add_score") then
+		self.score = self.score + message.score
+		local score_node = gui.get_node("score")
+		gui.set_text(score_node, "SCORE: " .. self.score)
+	end
+end
+

@@ -1,0 +1,10 @@
+name: "main"
+collection_instances {
+  id: "car"
+  collection: "/main/car.collection"
+  position {
+    x: 163.0
+    y: 137.0
+  }
+}
+scale_along_z: 0

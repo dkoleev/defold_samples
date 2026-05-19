@@ -1,0 +1,6 @@
+images {
+  image: "/assets/start_car.png"
+}
+images {
+  image: "/assets/start_tire.png"
+}

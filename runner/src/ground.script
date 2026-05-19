@@ -1,0 +1,27 @@
+local pieces = { "ground_0", "ground_1", "ground_2", "ground_3", "ground_4", "ground_5", "ground_6" }
+local piece_size = 228
+
+function init(self)
+    self.speed = 0
+end
+
+function update(self, dt)
+    for i, p in ipairs(pieces) do
+        local pos = go.get_position(p)
+        
+        if pos.x < -piece_size then
+            pos.x =  piece_size * 6
+        end
+
+        pos.x = pos.x - self.speed * dt
+        
+        go.set_position(pos, p)
+
+    end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("set_speed") then
+        self.speed = message.speed
+    end    
+end

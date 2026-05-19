@@ -1,0 +1,51 @@
+name: "level"
+instances {
+  id: "hero"
+  prototype: "/main/hero.go"
+  position {
+    x: 112.0
+    y: -6.0
+    z: 0.1
+  }
+  component_properties {
+    id: "hero"
+    properties {
+      id: "jump_takeoff_speed"
+      value: "1500.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
+  }
+  scale3 {
+    x: 0.2
+    y: 0.2
+  }
+}
+collection_instances {
+  id: "ground"
+  collection: "/level/ground.collection"
+}
+scale_along_z: 0
+embedded_instances {
+  id: "logic"
+  data: "components {\n"
+  "  id: \"controller\"\n"
+  "  component: \"/src/controller.script\"\n"
+  "}\n"
+  ""
+}
+embedded_instances {
+  id: "factories"
+  data: "embedded_components {\n"
+  "  id: \"factory_long_platform\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/level/objects/platform_long.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"factory_short_platform\"\n"
+  "  type: \"factory\"\n"
+  "  data: \"prototype: \\\"/level/objects/platform.go\\\"\\n"
+  "\"\n"
+  "}\n"
+  ""
+}

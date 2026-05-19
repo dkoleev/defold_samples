@@ -1,0 +1,16 @@
+images {
+  image: "/level/assets/ground01.png"
+}
+images {
+  image: "/level/assets/ground02.png"
+}
+images {
+  image: "/level/assets/rock_planks.png"
+}
+images {
+  image: "/level/assets/spikes.png"
+}
+images {
+  image: "/level/assets/coin.png"
+}
+extrude_borders: 2

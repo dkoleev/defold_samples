@@ -1,0 +1,16 @@
+local log = require("log.log")
+local logger = log.get_logger("bootstrap")
+
+local scene_manager = require("src.scene_manager")
+
+function init(self)
+    logger:debug("Star game loading")
+
+    scene_manager.load_scene("bootstrap#main_collectionproxy")
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("proxy_loaded") then
+        msg.post(sender, "enable")
+    end
+end

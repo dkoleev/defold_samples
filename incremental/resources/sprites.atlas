@@ -1,0 +1,49 @@
+images {
+  image: "/assets/hand_drawn/black_ship.png"
+}
+images {
+  image: "/assets/hand_drawn/BlueFrame.png"
+}
+images {
+  image: "/assets/hand_drawn/bomb.png"
+}
+images {
+  image: "/assets/hand_drawn/bullet.png"
+}
+images {
+  image: "/assets/hand_drawn/grid_paper.jpg"
+}
+images {
+  image: "/assets/hand_drawn/island.png"
+}
+images {
+  image: "/assets/hand_drawn/large_circle.png"
+}
+images {
+  image: "/assets/hand_drawn/line_paper.png"
+}
+images {
+  image: "/assets/hand_drawn/moon.png"
+}
+images {
+  image: "/assets/hand_drawn/OrangeFrame.png"
+}
+images {
+  image: "/assets/hand_drawn/paper_bg.png"
+}
+images {
+  image: "/assets/hand_drawn/red_ship.png"
+}
+images {
+  image: "/assets/hand_drawn/RedFrame.png"
+}
+images {
+  image: "/assets/hand_drawn/simple_paper.jpg"
+}
+images {
+  image: "/assets/hand_drawn/white_square.png"
+}
+images {
+  image: "/assets/hand_drawn/yellow_ship.png"
+}
+extrude_borders: 2

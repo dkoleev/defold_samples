@@ -1,0 +1,57 @@
+go.property("color", hash("none"))
+
+local colors = require("src.colors")
+
+local color
+
+function init(self)
+    self.fx1 = nil
+    self.fx2 = nil
+
+    go.set_scale(0.18)
+
+    msg.post("#cover", "disable")
+
+    if self.color == nil then
+        msg.post("#sprite", "disable")
+    else
+        sprite.play_flipbook("#sprite", self.color)
+    end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("make_magic") then
+        self.color = colors.type.MAGIC
+        msg.post("#cover", "enable")
+        msg.post("#sprite", "enable")
+
+        sprite.play_flipbook("#sprite", hash("magic-sphere_layer1"))
+
+        local p = go.get_position()
+        self.fx1 = factory.create("#factory_fx", p, nil, { direction = hash("left") })
+        self.fx2 = factory.create("#factory_fx", p, nil, { direction = hash("right") })
+
+        go.set_parent(self.fx1, go.get_id())
+        go.set_parent(self.fx2, go.get_id())
+
+        go.set(self.fx1, "position", vmath.vector3())
+        go.set(self.fx2, "position", vmath.vector3())
+        go.set(self.fx1, "position.z", 0.01)
+        go.set(self.fx1, "scale", 1)
+        go.set(self.fx2, "position.z", 0.02)
+        go.set(self.fx2, "scale", 1)
+    elseif message_id == hash("light_on") or message_id == hash("light_off") then
+        msg.post(self.fx1, message_id)
+        msg.post(self.fx2, message_id)
+    end
+end
+
+function final(self)
+    if self.fx1 ~= nil then
+        go.delete(self.fx1)
+    end
+
+    if self.fx2 ~= nil then
+        go.delete(self.fx2)
+    end
+end

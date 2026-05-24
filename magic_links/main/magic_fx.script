@@ -1,0 +1,25 @@
+go.property("direction", hash("left"))
+
+local h_light_on = hash("light_on")
+local h_light_off = hash("light_off")
+local h_left = hash("left")
+local h_right = hash("right")
+
+function init(self)
+    msg.post("#", h_light_off)
+
+    go.set(".", "euler.z", 0)
+    if self.direction == h_left then
+        go.animate(".", "euler.z", go.PLAYBACK_LOOP_FORWARD, 360, go.EASING_LINEAR, 3 + math.random())
+    else
+        go.animate(".", "euler.z", go.PLAYBACK_LOOP_FORWARD, -360, go.EASING_LINEAR, 2 + math.random())
+    end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == h_light_on then
+        msg.post("#light", "enable")
+    elseif message_id == h_light_off then
+        msg.post("#light", "disable")
+    end
+end

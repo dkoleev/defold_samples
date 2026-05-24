@@ -1,0 +1,16 @@
+images {
+  image: "/assets/images/button-YES.png"
+}
+images {
+  image: "/assets/images/button1.png"
+}
+images {
+  image: "/assets/images/button_NO.png"
+}
+images {
+  image: "/assets/images/drop1_icon.png"
+}
+images {
+  image: "/assets/images/pop_up_plate.png"
+}
+extrude_borders: 2

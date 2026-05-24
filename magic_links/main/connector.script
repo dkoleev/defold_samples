@@ -1,0 +1,4 @@
+function init(self)
+    go.set_scale(0.18)
+    go.set(".", "position.z", 1)
+end

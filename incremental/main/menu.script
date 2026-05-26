@@ -3,13 +3,14 @@ local scene_manager = require("src.scene_manager")
 -- local logger = log.get_logger("game")
 
 function init(self)
-	-- logger:warn("Init")
 	scene_manager.load_level("level_1_proxy#collectionproxy")
+	
+	-- timer.delay(2, false, function ()
+	-- 	-- scene_manager.switch_level_async("level_2_proxy#collectionproxy", nil, 0)
+	-- 	scene_manager.switch_level("level_2_proxy#collectionproxy")
+	-- end)
 
-	timer.delay(2, false, function ()
-		-- scene_manager.switch_level_async("level_2_proxy#collectionproxy", nil, 0)
-		scene_manager.switch_level("level_2_proxy#collectionproxy")
-	end)
+	-- window.set_size(1920, 1080)
 end
 
 function on_message(self, message_id, message, sender)

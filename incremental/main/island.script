@@ -1,0 +1,107 @@
+local log = require("log.log")
+local logger = log.get_logger("island")
+
+--- Get closeset enemy to the island (if there is noone then return nil)
+--- @return userdata|nil
+local function get_closest_enemy(self)
+    local closest = nil
+    local min_distance = math.huge
+    local pos = go.get_position()
+
+    for _, enemy in pairs(self.enemies_in_range) do
+        if go.exists(enemy) then
+            local dist = vmath.length(go.get_position(enemy) - pos)
+            if dist < min_distance then
+                min_distance = dist
+                closest = enemy
+            end
+        end
+    end
+
+    return closest
+end
+
+local function spawn_bullet(self)
+    local closest = get_closest_enemy(self)
+    if not closest then
+        logger:error("Not found any enemy in range for spawn bullet. Something went wrong")
+        return
+    end
+
+    local dir = vmath.normalize(go.get_position(closest) - go.get_position())
+
+    factory.create("/factories#bullet_factory", go.get_position(), nil, {
+        direction = dir
+    })
+end
+
+local function spawn_bomb(self)
+    local closest = get_closest_enemy(self)
+    if not closest then
+        logger:error("Not found any enemy in range for spawn bullet. Something went wrong")
+        return
+    end
+
+    factory.create("/factories#bomb_factory", go.get_position(), nil, {
+        goal_point = go.get_position(closest)
+    })
+end
+
+function init(self)
+    self.hp = 100
+    self.max_hp = 100
+
+    self.bullet_time_spent = 0
+    self.bullet_interval = 1.5
+
+    self.bomb_time_spent = 0
+    self.bomb_interval = 2.0
+
+    self.enemies_in_range = {}
+end
+
+function update(self, dt)
+    self.bullet_time_spent = self.bullet_time_spent + dt
+    if self.bullet_time_spent >= self.bullet_interval and #self.enemies_in_range > 0 then
+        spawn_bullet(self)
+        self.bullet_time_spent = 0
+    end
+
+    self.bomb_time_spent = self.bomb_time_spent + dt
+    if self.bomb_time_spent >= self.bomb_interval and #self.enemies_in_range > 0 then
+        spawn_bomb(self)
+        self.bomb_time_spent = 0
+    end
+end
+
+local function get_damage(self, damage, source)
+    self.hp = math.max(0, self.hp - damage)
+    logger:debug("Get damage from" ..
+    source .. ". Id: " .. go.get_id() .. " | damage : " .. damage .. " | current hp: " .. self.hp)
+    if self.hp == 0 then
+        logger:debug("Destroyed. Id: " .. go.get_id())
+        go.delete()
+    end
+end
+
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("trigger_response") then
+        if message.other_group == hash("enemy") then
+            if message.enter then
+                table.insert(self.enemies_in_range, message.other_id)
+            else
+                -- Remove enemy with it exits trigger
+                for i, enemy in ipairs(self.enemies_in_range) do
+                    if enemy == message.other_id then
+                        table.remove(self.enemies_in_range, i)
+                    end
+                end
+            end
+        end
+    end
+
+    if message_id == hash("damage") then
+        get_damage(self, message.damage, message.source)
+    end
+end

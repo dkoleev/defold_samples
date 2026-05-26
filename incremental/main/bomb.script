@@ -1,0 +1,46 @@
+local game_utils = require("src.utils.game_utils")
+
+go.property("goal_point", vmath.vector3())
+
+function init(self)
+    self.speed = 80
+    self.damage_amount = 30
+    self.direction = vmath.normalize(self.goal_point - go.get_position())
+
+    self.enemies_in_range = {}
+end
+
+local function explode(self)
+    for _, enemy in pairs(self.enemies_in_range) do
+        if go.exists(enemy) then
+            msg.post(enemy, "damage", {
+                damage = self.damage_amount,
+                source = "bomb"
+            })
+        end
+    end
+
+    print("DESTROY BOMB")
+    factory.create("/factories#explosion_factory", go.get_position())
+    go.delete()
+end
+
+function update(self, dt)
+    local pos = go.get_position()
+    local new_pos = pos + self.speed * self.direction * dt
+    go.set_position(new_pos)
+
+    if vmath.length(self.goal_point - new_pos) < 5 then
+        explode(self)
+    end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("trigger_response") and message.other_group == hash("enemy") then
+        if message.enter then
+            table.insert(self.enemies_in_range, message.other_id)
+        elseif self.enemies_in_range[message.other_id] then
+            game_utils.remove_value_from_table(self.enemies_in_range, message.other_id)
+        end
+    end
+end

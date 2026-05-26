@@ -1,0 +1,29 @@
+go.property("direction", vmath.vector3())
+
+function init(self)
+    self.speed = 150
+    self.time_alive = 0
+    self.damage_amount = 15
+
+    local angel = vmath.quat_rotation_z(math.atan2(self.direction.y, self.direction.x))
+    go.set_rotation(angel)
+end
+
+function update(self, dt)
+    local pos = go.get_position()
+    local new_pos = pos + self.speed * self.direction * dt
+    go.set_position(new_pos)
+
+    self.time_alive = self.time_alive + dt
+    if self.time_alive > 8 then go.delete() end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("trigger_response") and message.other_group == hash("enemy") then
+        msg.post(message.other_id, "damage", { 
+            damage = self.damage_amount,
+            source = "bullet"
+         })
+        go.delete()
+    end
+end

@@ -1,0 +1,7 @@
+local function fx_done()
+    go.delete()
+end
+
+function init(self)
+    particlefx.play("#explosion", fx_done)
+end

@@ -1,0 +1,77 @@
+local log = require("log.log")
+local logger = log.get_logger("enemy_ship")
+local game_utils = require("src.utils.game_utils")
+
+go.property("ship_type", hash(""))
+
+local stats = {
+    black_ship = {
+        speed = 100,
+        hp = 25,
+        damage = 15
+    },
+    yellow_ship = {
+        speed = 30,
+        hp = 30,
+        damage = 20
+    },
+    red_ship = {
+        speed = 70,
+        hp = 20,
+        damage = 10
+    }
+}
+
+function init(self)
+    local type = ""
+
+    if self.ship_type == hash("black_ship") then
+        type = "black_ship"
+    elseif self.ship_type == hash("yellow_ship") then
+        type = "yellow_ship"
+    else
+        type = "red_ship"
+    end
+
+    self.speed = stats[type].speed
+    self.hp = stats[type].hp
+    self.damage = stats[type].damage
+
+    self.island_pos = go.get_position("/island")
+    self.dir = vmath.normalize(self.island_pos - go.get_position())
+
+    local angel = vmath.quat_rotation_z(math.atan2(self.dir.y, self.dir.x))
+    go.set_rotation(angel)
+end
+
+function update(self, dt)
+    local pos = go.get_position()
+    local new_pos = pos + self.dir * self.speed * dt
+    go.set_position(new_pos)
+end
+
+local function get_damage(self, damage, source)
+    self.hp = math.max(0, self.hp - damage)
+    logger:debug("Get damage from" ..
+    source .. ". Id: " .. go.get_id() .. " | damage : " .. damage .. " | current hp: " .. self.hp)
+    if self.hp == 0 then
+        logger:debug("Destroyed. Id: " .. go.get_id())
+        factory.create("/factories#explosion_factory", go.get_position())
+        go.delete()
+    end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("trigger_response") then
+        -- game_utils.print_table(message)
+        if message.other_group == hash("island") then
+            msg.post(message.other_id, "damage", {
+                damage = self.damage,
+                source = "ship"
+            })
+            go.delete()
+        end
+    elseif message_id == hash("damage") then
+        get_damage(self, message.damage, message.source)
+    end
+end

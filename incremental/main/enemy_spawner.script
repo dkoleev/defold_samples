@@ -1,0 +1,55 @@
+local log = require("log.log")
+local logger = log.get_logger("enemy_spawner")
+
+local spawn_interval = 2
+local spawn_acceleration = 0.25
+local min_interval = 0.5
+local time_spent = 10
+
+local spawn_dist = 800
+
+local current_diff = 0
+local diff_increase = 2
+local difficulties = {
+    black_ship = 10,
+    yellow_ship = 15,
+    red_ship = 20
+}
+
+local factories = { "/factories#black_ship_factory", "/factories#red_ship_factory", "/factories#yellow_ship_factory" }
+
+local function spawn_ship()
+    local pos = vmath.vector3(spawn_dist, 0, 0.6)
+    local angle = vmath.quat_rotation_z(math.random(0, 360))
+    pos = vmath.rotate(angle, pos)
+
+    local island_pos = go.get_position("/island")
+    local final_pos = island_pos + pos
+
+    local random_diff = math.random(0, current_diff)
+    local factory_id = ""
+
+    if random_diff < difficulties.black_ship then
+        factory_id = factories[1]
+    elseif random_diff < difficulties.yellow_ship then
+        factory_id = factories[2]
+    else
+        factory_id = factories[3]
+    end
+
+    factory.create(factory_id, final_pos)
+end
+
+function update(self, dt)
+    time_spent = time_spent + dt
+
+    if time_spent >= spawn_interval then
+        spawn_ship()
+
+        time_spent = 0
+        spawn_interval = spawn_interval - spawn_acceleration;
+        spawn_interval = math.max(spawn_interval, min_interval)
+
+        current_diff = current_diff + diff_increase
+    end
+end

@@ -7,7 +7,7 @@ shared_state = 1
 [display]
 width = 1920
 height = 1080
-high_dpi = 1
+high_dpi = 0
 
 [android]
 input_method = HiddenInputField
@@ -22,4 +22,7 @@ scale_mode = stretch
 [project]
 title = Empty Project
 dependencies#0 = https://github.com/Insality/defold-log/archive/refs/tags/6.zip
+
+[sprite]
+max_count = 256
 

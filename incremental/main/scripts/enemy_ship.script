@@ -1,6 +1,7 @@
 local log = require("log.log")
 local logger = log.get_logger("enemy_ship")
 local game_utils = require("src.utils.game_utils")
+local state = require("src.game_state")
 
 go.property("ship_type", hash(""))
 
@@ -8,34 +9,43 @@ local stats = {
     black_ship = {
         speed = 100,
         hp = 25,
-        damage = 15
+        damage = 15,
+        gold_reward = 5,
     },
     yellow_ship = {
         speed = 30,
         hp = 30,
-        damage = 20
+        damage = 20,
+        gold_reward = 10,
     },
     red_ship = {
         speed = 70,
         hp = 20,
-        damage = 10
+        damage = 10,
+        gold_reward = 15,
     }
 }
 
-function init(self)
-    local type = ""
-
+--- Get ship type
+--- @param self any
+--- @return string
+local function get_ship_type(self)
     if self.ship_type == hash("black_ship") then
-        type = "black_ship"
+        return "black_ship"
     elseif self.ship_type == hash("yellow_ship") then
-        type = "yellow_ship"
+        return "yellow_ship"
     else
-        type = "red_ship"
+        return "red_ship"
     end
+end
+
+function init(self)
+    local type = get_ship_type(self)
 
     self.speed = stats[type].speed
     self.hp = stats[type].hp
     self.damage = stats[type].damage
+    self.gold_reward = stats[type].gold_reward
 
     self.island_pos = go.get_position("/island")
     self.dir = vmath.normalize(self.island_pos - go.get_position())
@@ -52,10 +62,11 @@ end
 
 local function get_damage(self, damage, source)
     self.hp = math.max(0, self.hp - damage)
-    logger:debug("Get damage from" ..
-    source .. ". Id: " .. go.get_id() .. " | damage : " .. damage .. " | current hp: " .. self.hp)
     if self.hp == 0 then
-        logger:debug("Destroyed. Id: " .. go.get_id())
+        local type = get_ship_type(self)
+        state.player_stats.gold_amount = state.player_stats.gold_amount + self.gold_reward
+        msg.post("/gui#left_panel", "update_stats")
+
         factory.create("/factories#explosion_factory", go.get_position())
         go.delete()
     end

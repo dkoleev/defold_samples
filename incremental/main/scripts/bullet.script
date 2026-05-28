@@ -1,9 +1,9 @@
+local state = require("src.game_state")
+
 go.property("direction", vmath.vector3())
 
 function init(self)
-    self.speed = 150
     self.time_alive = 0
-    self.damage_amount = 15
 
     local angel = vmath.quat_rotation_z(math.atan2(self.direction.y, self.direction.x))
     go.set_rotation(angel)
@@ -11,7 +11,7 @@ end
 
 function update(self, dt)
     local pos = go.get_position()
-    local new_pos = pos + self.speed * self.direction * dt
+    local new_pos = pos + state.player_stats.bullet_speed * self.direction * dt
     go.set_position(new_pos)
 
     self.time_alive = self.time_alive + dt
@@ -21,7 +21,7 @@ end
 function on_message(self, message_id, message, sender)
     if message_id == hash("trigger_response") and message.other_group == hash("enemy") then
         msg.post(message.other_id, "damage", { 
-            damage = self.damage_amount,
+            damage = state.player_stats.bullet_damage,
             source = "bullet"
          })
         go.delete()

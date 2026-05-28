@@ -1,6 +1,8 @@
 local log = require("log.log")
 local logger = log.get_logger("island")
 
+local state = require("src.game_state")
+
 --- Get closeset enemy to the island (if there is noone then return nil)
 --- @return userdata|nil
 local function get_closest_enemy(self)
@@ -47,43 +49,63 @@ local function spawn_bomb(self)
     })
 end
 
+local function switch_debug(self)
+    self.debug = not self.debug
+    msg.post("#fire_range_sprite", self.debug and "enable" or "disable")
+end
+
 function init(self)
-    self.hp = 100
-    self.max_hp = 100
+    msg.post(".", "acquire_input_focus")
 
     self.bullet_time_spent = 0
-    self.bullet_interval = 1.5
-
     self.bomb_time_spent = 0
-    self.bomb_interval = 2.0
+    self.hp_regen_time_spent = 0
 
     self.enemies_in_range = {}
+
+    self.debug = true
+    switch_debug(self)    
 end
 
 function update(self, dt)
     self.bullet_time_spent = self.bullet_time_spent + dt
-    if self.bullet_time_spent >= self.bullet_interval and #self.enemies_in_range > 0 then
+    if self.bullet_time_spent >= state.player_stats.bullet_interval and #self.enemies_in_range > 0 then
         spawn_bullet(self)
         self.bullet_time_spent = 0
     end
 
     self.bomb_time_spent = self.bomb_time_spent + dt
-    if self.bomb_time_spent >= self.bomb_interval and #self.enemies_in_range > 0 then
+    if self.bomb_time_spent >= state.player_stats.bomb_interval
+        and #self.enemies_in_range > 0
+        and state.player_stats.bomb_unlocked then
         spawn_bomb(self)
         self.bomb_time_spent = 0
+    end
+
+    self.hp_regen_time_spent = self.hp_regen_time_spent + dt
+    if self.hp_regen_time_spent >= state.player_stats.hp_regen_interval then
+        state.player_stats.hp = math.min(state.player_stats.max_hp, state.player_stats.hp + state.player_stats.hp_regen)
+        msg.post("/gui#left_panel", "update_stats")
+        self.hp_regen_time_spent = 0
     end
 end
 
 local function get_damage(self, damage, source)
-    self.hp = math.max(0, self.hp - damage)
+    state.player_stats.hp = math.max(0, state.player_stats.hp - damage)
     logger:debug("Get damage from" ..
-    source .. ". Id: " .. go.get_id() .. " | damage : " .. damage .. " | current hp: " .. self.hp)
-    if self.hp == 0 then
-        logger:debug("Destroyed. Id: " .. go.get_id())
+        source .. ". Id: " .. go.get_id() .. " | damage : " .. damage .. " | current hp: " .. state.player_stats.hp)
+    if state.player_stats.hp == 0 then
         go.delete()
     end
+
+    msg.post("/gui#left_panel", "update_stats")
 end
 
+function on_input(self, action_id, action)
+    if action_id == hash("debug") and action.pressed then
+        switch_debug(self)
+    end
+end
 
 function on_message(self, message_id, message, sender)
     if message_id == hash("trigger_response") then
@@ -103,5 +125,12 @@ function on_message(self, message_id, message, sender)
 
     if message_id == hash("damage") then
         get_damage(self, message.damage, message.source)
+    end
+
+    if message_id == hash("fire_range_updated") then
+        local circle = physics.get_shape("/island#collisionobject_fire_range", "fire_range_collision")
+        circle.diameter = state.player_stats.fire_range
+        physics.set_shape("/island#collisionobject_fire_range", "fire_range_collision", circle)
+        go.set("/island#fire_range_sprite", "size", vmath.vector3(circle.diameter))
     end
 end

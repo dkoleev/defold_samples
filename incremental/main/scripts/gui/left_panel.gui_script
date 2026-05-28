@@ -1,0 +1,213 @@
+local state = require("src.game_state")
+local balance = require("src.game_balance")
+local skill_type = require("src.skill_type")
+
+local function init_buttons(self)
+    for key, value in pairs(self.buttons) do
+        value.button = gui.get_node(self.buttons[key].id .. "/button")
+        value.text = gui.get_node(self.buttons[key].id .. "/text")
+    end
+end
+
+local function update_buttons_position(self)
+    for key, value in pairs(self.buttons) do
+        self.buttons_count = self.buttons_count + 1
+        self.button_height = gui.get_size(self.buttons[key].button).y
+        local index = 1
+
+
+        for _, int_value in pairs(self.buttons) do
+            if int_value.index < value.index and gui.is_enabled(int_value.button) then
+                index = index + 1
+            end
+        end
+
+        local new_y_pos = (index - 1) * (self.button_separation + self.button_height) + self.button_separation
+        local new_pos = vmath.vector3(0, -new_y_pos, 0)
+        gui.set_position(self.buttons[key].button, new_pos)
+    end
+end
+
+local function update_buttons_text(self)
+    for key, value in pairs(self.buttons) do
+        local cost = state.skill_costs[key]
+        local text = value.button_text
+        if cost ~= nil then
+            text = value.button_text .. " (" .. cost .. " G)"
+        end
+        gui.set_text(value.text, text)
+    end
+end
+
+local function update_stats_text(self)
+    local gold_amount = state.player_stats.gold_amount
+    local hp = state.player_stats.hp
+    local max_hp = state.player_stats.max_hp
+
+    local text = "Gold: " .. tostring(gold_amount) .. " HP: " .. tostring(hp) .. "/" .. tostring(max_hp)
+    gui.set_text(self.stats_text, text)
+end
+
+function init(self)
+    msg.post(".", "acquire_input_focus")
+
+    self.left_panel = gui.get_node("left_panel")
+    self.slider_panel = gui.get_node("slider_panel")
+    self.buttons_container = gui.get_node("buttons_container")
+    self.stats_text = gui.get_node("stats_text")
+
+    self.on_left_panel = false
+    self.on_slider_panel = false
+    self.button_separation = 20
+    self.button_height = 0
+    self.buttons_count = 0;
+    self.scroll_amount = 20
+
+    self.buttons = {
+        [skill_type.bullet_damage] = {
+            id = "bullet_damage_button",
+            index = 1,
+            button_text = "Increase bullet damage",
+            button = nil,
+            text = nil
+        },
+        [skill_type.bullet_interval] = {
+            id = "bullet_interval_button",
+            index = 2,
+            button_text = "Decrease bullets interval",
+            button = nil,
+            text = nil
+        },
+        unlock_bomb = {
+            id = "unlock_bomb_button",
+            index = 3,
+            button_text = "Unlock bomb",
+            button = nil,
+            text = nil
+        },
+        [skill_type.bomb_damage] = {
+            id = "bomb_damage_button",
+            index = 4,
+            button_text = "Increase bomb damage",
+            button = nil,
+            text = nil
+        },
+        [skill_type.bomb_interval] = {
+            id = "bomb_interval_button",
+            index = 5,
+            button_text = "Decrease bombs interval",
+            button = nil,
+            text = nil
+        },
+        [skill_type.max_hp] = {
+            id = "max_hp_button",
+            index = 6,
+            button_text = "Increase Max HP",
+            button = nil,
+            text = nil
+        },
+        [skill_type.hp_regen] = {
+            id = "hp_regen_button",
+            index = 7,
+            button_text = "Increase HP regen",
+            button = nil,
+            text = nil
+        },
+        [skill_type.fire_range] = {
+            id = "fire_range_button",
+            index = 8,
+            button_text = "Increase Fire range",
+            button = nil,
+            text = nil
+        }
+    }
+
+    init_buttons(self)
+    update_buttons_text(self)
+    update_buttons_position(self)
+    update_stats_text(self)
+
+    local container_height = self.buttons_count * (self.button_separation + self.button_height) + self.button_separation
+    local container_size = vmath.vector3(gui.get_size(self.buttons_container).x, container_height, 0)
+    gui.set_size(self.buttons_container, container_size)
+
+    gui.set_position(self.buttons_container, vmath.vector3())
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("update_stats") then
+        update_stats_text(self)
+    end
+end
+
+function on_input(self, action_id, action)
+    if action and action.x and action.y then
+        self.on_left_panel = gui.pick_node(self.left_panel, action.x, action.y)
+        self.on_slider_panel = gui.pick_node(self.slider_panel, action.x, action.y)
+    else
+        self.on_left_panel = false
+        self.on_slider_panel = false
+    end
+
+    -- print("On left panel: ", self.on_left_panel, " - On buttons container: ", self.on_buttons_container)
+
+    if self.on_slider_panel then
+        if action_id == hash("scroll_up") and action.value == 1 then
+            local pos = gui.get_position(self.buttons_container) + vmath.vector3(0, self.scroll_amount, 0)
+            local max_pos = gui.get_size(self.buttons_container).y - gui.get_size(self.slider_panel).y
+            pos.y = math.max(pos.y, 0, max_pos)
+            gui.set_position(self.buttons_container, pos)
+        end
+        if action_id == hash("scroll_down") and action.value == 1 then
+            local pos = gui.get_position(self.buttons_container) - vmath.vector3(0, self.scroll_amount, 0)
+            local max_pos = gui.get_size(self.buttons_container).y - gui.get_size(self.slider_panel).y
+            pos.y = math.max(pos.y, 0, max_pos)
+            gui.set_position(self.buttons_container, pos)
+        end
+    end
+
+    if self.on_slider_panel then
+        for key, value in pairs(self.buttons) do
+            if gui.pick_node(value.button, action.x, action.y) then
+                gui.set_scale(value.button, vmath.vector3(1.1))
+
+                if action_id == hash("left_click") and action.pressed and gui.is_enabled(value.button) then
+                    if key == "unlock_bomb" and state.player_stats.gold_amount >= state.skill_costs[key] then
+                        state.player_stats.gold_amount = state.player_stats.gold_amount - state.skill_costs[key]
+                        state.player_stats.bomb_unlocked = true
+
+                        gui.set_enabled(value.button, false)
+                        gui.set_enabled(self.buttons["bomb_damage"].button, true)
+                        gui.set_enabled(self.buttons.bomb_interval.button, true)
+
+                        update_buttons_position(self)
+                        update_buttons_text(self)
+                        update_stats_text(self)
+                    else
+                        if state.player_stats.gold_amount >= state.skill_costs[key] then
+                            local old_gold_amont = state.player_stats.gold_amount;
+                            state.skill_levels[key] = state.skill_levels[key] + 1
+                            state.skill_costs[key] = state.skill_costs[key] * 2
+                            state.player_stats[key] = state.player_stats[key] * balance.skill_effects[key];
+                            state.player_stats.gold_amount = state.player_stats.gold_amount - state.skill_costs[key]
+                            print("New skill level: ", state.skill_levels[key],
+                                " Old gold: ", old_gold_amont, " Current gold: ", state.player_stats.gold_amount)
+
+                            update_buttons_text(self)
+                            update_stats_text(self)
+
+                            if key == skill_type.fire_range then
+                                msg.post("/island", "fire_range_updated")
+                            end
+                        else
+                            print("Not enough money.", " Current: ", state.player_stats.gold_amount, " Required: ",
+                                state.skill_costs[key])
+                        end
+                    end
+                end
+            else
+                gui.set_scale(value.button, vmath.vector3(1))
+            end
+        end
+    end
+end

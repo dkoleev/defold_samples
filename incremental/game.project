@@ -7,7 +7,7 @@ shared_state = 1
 [display]
 width = 1920
 height = 1080
-high_dpi = 0
+high_dpi = 1
 
 [android]
 input_method = HiddenInputField
@@ -15,6 +15,7 @@ input_method = HiddenInputField
 [physics]
 gravity_y = -1000.0
 scale = 0.01
+debug = 0
 
 [html5]
 scale_mode = stretch
@@ -25,4 +26,7 @@ dependencies#0 = https://github.com/Insality/defold-log/archive/refs/tags/6.zip
 
 [sprite]
 max_count = 256
+
+[input]
+use_accelerometer = 0
 

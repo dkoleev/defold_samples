@@ -7,5 +7,5 @@ components {
 }
 components {
   id: "logic"
-  component: "/main/explosion.script"
+  component: "/main/scripts/explosion.script"
 }

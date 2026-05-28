@@ -1,6 +1,6 @@
 components {
   id: "enemy_ship"
-  component: "/main/enemy_ship.script"
+  component: "/main/scripts/enemy_ship.script"
   properties {
     id: "ship_type"
     value: "black_ship"

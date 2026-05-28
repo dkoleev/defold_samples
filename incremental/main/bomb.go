@@ -1,6 +1,6 @@
 components {
   id: "bomb"
-  component: "/main/bomb.script"
+  component: "/main/scripts/bomb.script"
 }
 embedded_components {
   id: "sprite"
@@ -17,8 +17,8 @@ embedded_components {
     z: 0.7
   }
   scale {
-    x: 0.125
-    y: 0.125
+    x: 0.1
+    y: 0.1
   }
 }
 embedded_components {

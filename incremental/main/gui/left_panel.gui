@@ -1,3 +1,12 @@
+script: "/main/scripts/gui/left_panel.gui_script"
+fonts {
+  name: "default"
+  font: "/builtins/fonts/default.font"
+}
+textures {
+  name: "sprites"
+  texture: "/main/sprites.atlas"
+}
 nodes {
   position {
     x: 960.0
@@ -28,12 +37,308 @@ nodes {
     z: 0.2
   }
   type: TYPE_BOX
-  id: "box"
+  id: "left_panel"
   pivot: PIVOT_W
   adjust_mode: ADJUST_MODE_STRETCH
   parent: "root"
   inherit_alpha: true
   size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  position {
+    x: 210.0
+    y: 540.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  id: "north"
+  pivot: PIVOT_N
+  adjust_mode: ADJUST_MODE_STRETCH
+  parent: "left_panel"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    y: -79.0
+  }
+  scale {
+    x: 4.0
+    y: 4.0
+    z: 4.0
+  }
+  size {
+    x: 100.0
+    y: 40.0
+  }
+  type: TYPE_TEXT
+  text: "Upgrades"
+  font: "default"
+  id: "upgrade_text"
+  parent: "north"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    y: -173.0
+  }
+  size {
+    x: 420.0
+    y: 800.0
+  }
+  color {
+    x: 0.4
+    y: 0.6
+    z: 0.4
+  }
+  type: TYPE_BOX
+  id: "slider_panel"
+  pivot: PIVOT_N
+  parent: "north"
+  inherit_alpha: true
+  clipping_mode: CLIPPING_MODE_STENCIL
+  size_mode: SIZE_MODE_AUTO
+}
+nodes {
+  size {
+    x: 420.0
+    y: 320.0
+  }
+  type: TYPE_BOX
+  id: "buttons_container"
+  pivot: PIVOT_N
+  parent: "slider_panel"
+  inherit_alpha: true
+}
+nodes {
+  position {
+    y: -13.0
+  }
+  type: TYPE_TEMPLATE
+  id: "bullet_damage_button"
+  parent: "buttons_container"
+  inherit_alpha: true
+  template: "/main/gui/button.gui"
+}
+nodes {
+  position {
+    y: 2.0
+  }
+  type: TYPE_BOX
+  id: "bullet_damage_button/button"
+  parent: "bullet_damage_button"
+  overridden_fields: 1
+  template_node_child: true
+}
+nodes {
+  type: TYPE_TEXT
+  id: "bullet_damage_button/text"
+  parent: "bullet_damage_button/button"
+  template_node_child: true
+}
+nodes {
+  position {
+    y: -106.0
+  }
+  type: TYPE_TEMPLATE
+  id: "bullet_interval_button"
+  parent: "buttons_container"
+  inherit_alpha: true
+  template: "/main/gui/button.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "bullet_interval_button/button"
+  parent: "bullet_interval_button"
+  template_node_child: true
+}
+nodes {
+  type: TYPE_TEXT
+  id: "bullet_interval_button/text"
+  parent: "bullet_interval_button/button"
+  template_node_child: true
+}
+nodes {
+  position {
+    y: -313.0
+  }
+  type: TYPE_TEMPLATE
+  id: "unlock_bomb_button"
+  parent: "buttons_container"
+  inherit_alpha: true
+  template: "/main/gui/button.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "unlock_bomb_button/button"
+  parent: "unlock_bomb_button"
+  template_node_child: true
+}
+nodes {
+  type: TYPE_TEXT
+  id: "unlock_bomb_button/text"
+  parent: "unlock_bomb_button/button"
+  template_node_child: true
+}
+nodes {
+  position {
+    y: -208.0
+  }
+  type: TYPE_TEMPLATE
+  id: "bomb_damage_button"
+  parent: "buttons_container"
+  inherit_alpha: true
+  template: "/main/gui/button.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "bomb_damage_button/button"
+  parent: "bomb_damage_button"
+  overridden_fields: 45
+  template_node_child: true
+  enabled: false
+}
+nodes {
+  type: TYPE_TEXT
+  id: "bomb_damage_button/text"
+  parent: "bomb_damage_button/button"
+  template_node_child: true
+}
+nodes {
+  position {
+    y: -313.0
+  }
+  type: TYPE_TEMPLATE
+  id: "bomb_interval_button"
+  parent: "buttons_container"
+  inherit_alpha: true
+  template: "/main/gui/button.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "bomb_interval_button/button"
+  parent: "bomb_interval_button"
+  overridden_fields: 45
+  template_node_child: true
+  enabled: false
+}
+nodes {
+  type: TYPE_TEXT
+  id: "bomb_interval_button/text"
+  parent: "bomb_interval_button/button"
+  template_node_child: true
+}
+nodes {
+  position {
+    y: -313.0
+  }
+  type: TYPE_TEMPLATE
+  id: "max_hp_button"
+  parent: "buttons_container"
+  inherit_alpha: true
+  template: "/main/gui/button.gui"
+}
+nodes {
+  position {
+    y: -1.0
+  }
+  type: TYPE_BOX
+  id: "max_hp_button/button"
+  parent: "max_hp_button"
+  overridden_fields: 1
+  template_node_child: true
+}
+nodes {
+  type: TYPE_TEXT
+  id: "max_hp_button/text"
+  parent: "max_hp_button/button"
+  template_node_child: true
+}
+nodes {
+  position {
+    y: -313.0
+  }
+  type: TYPE_TEMPLATE
+  id: "hp_regen_button"
+  parent: "buttons_container"
+  inherit_alpha: true
+  template: "/main/gui/button.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "hp_regen_button/button"
+  parent: "hp_regen_button"
+  template_node_child: true
+}
+nodes {
+  type: TYPE_TEXT
+  id: "hp_regen_button/text"
+  parent: "hp_regen_button/button"
+  template_node_child: true
+}
+nodes {
+  position {
+    y: -313.0
+  }
+  type: TYPE_TEMPLATE
+  id: "fire_range_button"
+  parent: "buttons_container"
+  inherit_alpha: true
+  template: "/main/gui/button.gui"
+}
+nodes {
+  type: TYPE_BOX
+  id: "fire_range_button/button"
+  parent: "fire_range_button"
+  template_node_child: true
+}
+nodes {
+  type: TYPE_TEXT
+  id: "fire_range_button/text"
+  parent: "fire_range_button/button"
+  template_node_child: true
+}
+nodes {
+  position {
+    x: 220.0
+    y: -535.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+  }
+  type: TYPE_BOX
+  id: "south"
+  pivot: PIVOT_S
+  adjust_mode: ADJUST_MODE_STRETCH
+  parent: "left_panel"
+  inherit_alpha: true
+  size_mode: SIZE_MODE_AUTO
+  visible: false
+}
+nodes {
+  position {
+    y: 48.0
+  }
+  scale {
+    x: 2.0
+    y: 2.0
+    z: 2.0
+  }
+  size {
+    x: 200.0
+    y: 50.0
+  }
+  type: TYPE_TEXT
+  text: "Gold amount:"
+  font: "default"
+  id: "stats_text"
+  parent: "south"
+  inherit_alpha: true
 }
 material: "/builtins/materials/gui.material"
 adjust_reference: ADJUST_REFERENCE_PARENT

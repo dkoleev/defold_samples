@@ -1,9 +1,15 @@
+local debugger = require('debugger.debugger')
+debugger.start()
+
 local log = require("log.log")
 local logger = log.get_logger("bootstrap")
 
 local scene_manager = require("src.scene_manager")
 
 function init(self)
+    -- msg.post(".", "acquire_input_focus")
+    msg.post("/bootstrap#main_collectionproxy", "acquire_input_focus")
+
     logger:debug("Star game loading")
 
     scene_manager.load_scene("bootstrap#main_collectionproxy")

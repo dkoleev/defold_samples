@@ -1,33 +1,34 @@
 local game_utils = require("src.utils.game_utils")
+local state = require("src.game_state")
 
 go.property("goal_point", vmath.vector3())
 
 function init(self)
-    self.speed = 80
-    self.damage_amount = 30
     self.direction = vmath.normalize(self.goal_point - go.get_position())
 
     self.enemies_in_range = {}
+
+    local duration = vmath.length(self.goal_point - go.get_position()) / state.player_stats.bomb_speed
+    go.animate("#sprite", "scale", go.PLAYBACK_LOOP_PINGPONG, vmath.vector3(0.2), go.EASING_OUTCUBIC, duration)
 end
 
 local function explode(self)
     for _, enemy in pairs(self.enemies_in_range) do
         if go.exists(enemy) then
             msg.post(enemy, "damage", {
-                damage = self.damage_amount,
+                damage = state.player_stats.bomb_damage,
                 source = "bomb"
             })
         end
     end
 
-    print("DESTROY BOMB")
     factory.create("/factories#explosion_factory", go.get_position())
     go.delete()
 end
 
 function update(self, dt)
     local pos = go.get_position()
-    local new_pos = pos + self.speed * self.direction * dt
+    local new_pos = pos + state.player_stats.bomb_speed * self.direction * dt
     go.set_position(new_pos)
 
     if vmath.length(self.goal_point - new_pos) < 5 then

@@ -1,0 +1,5 @@
+return {
+    easy = 1,
+    normal = 2,
+    hard = 3
+}

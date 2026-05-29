@@ -5,18 +5,39 @@ local log = require("log.log")
 local logger = log.get_logger("bootstrap")
 
 local scene_manager = require("src.scene_manager")
+local state = require("src.game_state")
 
 function init(self)
     -- msg.post(".", "acquire_input_focus")
-    msg.post("/bootstrap#main_collectionproxy", "acquire_input_focus")
+    msg.post("#level_1_proxy", "acquire_input_focus")
 
-    logger:debug("Star game loading")
+    state.init_state()
 
-    scene_manager.load_scene("bootstrap#main_collectionproxy")
+    scene_manager.load_level("#level_1_proxy")
+    -- scene_manager.load_scene("#game_over_proxy")
 end
 
 function on_message(self, message_id, message, sender)
     if message_id == hash("proxy_loaded") then
         msg.post(sender, "enable")
+    end
+
+    if  message_id == hash("load_scene") then
+        scene_manager.load_scene(message.scene_id)
+    end
+
+    if message_id == hash("unload_scene") then
+        scene_manager.unload_scene(message.scene_id)
+    end
+
+    if message_id == hash("restart_game") then 
+        state.init_state()
+        scene_manager.unload_scene("#game_over_proxy")
+        scene_manager.load_level("#level_1_proxy")
+    end
+
+    if message_id == hash("game_over") then
+        scene_manager.unload_level()
+        scene_manager.load_scene("#game_over_proxy")
     end
 end

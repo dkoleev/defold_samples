@@ -29,13 +29,11 @@ end
 function M.load_scene(scene)
     local scene_index = find_scene_index(scene)
     if scene_index then
-        logger.error("Scene" .. tostring(scene) .. " is already loaded")
-
+        error("Scene" .. tostring(scene) .. " is already loaded", 2)
         return false
     else
         table.insert(M.loaded_scenes, scene)
         msg.post(scene, "load")
-
 
         logger:debug("Load scene: " .. scene)
 
@@ -50,7 +48,7 @@ function M.unload_scene(scene)
     local scene_index = find_scene_index(scene)
 
     if not scene_index then
-        logger.error("Can't unload scene: " .. tostring(scene) .. " It is not loaded")
+        error("Can't unload scene: " .. tostring(scene) .. " It is not loaded", 2)
 
         return false
     end

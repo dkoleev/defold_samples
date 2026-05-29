@@ -6,6 +6,10 @@ key_trigger {
   input: KEY_SPACE
   action: "space"
 }
+key_trigger {
+  input: KEY_S
+  action: "change_game_speed"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_LEFT
   action: "left_click"

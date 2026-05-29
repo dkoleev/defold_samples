@@ -95,6 +95,7 @@ local function get_damage(self, damage, source)
     logger:debug("Get damage from" ..
         source .. ". Id: " .. go.get_id() .. " | damage : " .. damage .. " | current hp: " .. state.player_stats.hp)
     if state.player_stats.hp == 0 then
+        msg.post("bootstrap:/bootstrap#bootstrap", "game_over")
         go.delete()
     end
 
@@ -128,9 +129,9 @@ function on_message(self, message_id, message, sender)
     end
 
     if message_id == hash("fire_range_updated") then
-        local circle = physics.get_shape("/island#collisionobject_fire_range", "fire_range_collision")
+        local circle = physics.get_shape("#collisionobject_fire_range", "fire_range_collision")
         circle.diameter = state.player_stats.fire_range
-        physics.set_shape("/island#collisionobject_fire_range", "fire_range_collision", circle)
-        go.set("/island#fire_range_sprite", "size", vmath.vector3(circle.diameter))
+        physics.set_shape("#collisionobject_fire_range", "fire_range_collision", circle)
+        go.set("#fire_range_sprite", "size", vmath.vector3(circle.diameter))
     end
 end

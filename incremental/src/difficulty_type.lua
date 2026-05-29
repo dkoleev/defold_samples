@@ -1,5 +1,5 @@
 return {
-    easy = 1,
-    normal = 2,
-    hard = 3
+    easy = 0.9,
+    normal = 1.0,
+    hard = 1.1
 }

@@ -1,7 +1,10 @@
+local sound_manager = require("src.sound_manager")
+
 local function fx_done()
     go.delete()
 end
 
 function init(self)
+    sound_manager.explosion_sfx()
     particlefx.play("#explosion", fx_done)
 end

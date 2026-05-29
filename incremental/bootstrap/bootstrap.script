@@ -6,13 +6,18 @@ local logger = log.get_logger("bootstrap")
 
 local scene_manager = require("src.scene_manager")
 local state = require("src.game_state")
+local game_manager = require("src.game_manager")
+local sound_manager = require("src.sound_manager")
 
 function init(self)
+    math.randomseed(socket.gettime())
+
     -- msg.post(".", "acquire_input_focus")
     msg.post("#level_1_proxy", "acquire_input_focus")
 
-    state.init_state()
+    game_manager.init_game()
 
+    scene_manager.load_scene("/bootstrap#sound_proxy")
     scene_manager.load_level("#level_1_proxy")
     -- scene_manager.load_scene("#game_over_proxy")
 end
@@ -20,6 +25,12 @@ end
 function on_message(self, message_id, message, sender)
     if message_id == hash("proxy_loaded") then
         msg.post(sender, "enable")
+
+        if sender == msg.url("bootstrap:/bootstrap#sound_proxy") then 
+            sound_manager.play_music()
+            sound_manager.set_music(state.game_settings.music_on)
+            sound_manager.set_sfx(state.game_settings.sound_fx_on)
+        end
     end
 
     if  message_id == hash("load_scene") then
@@ -31,7 +42,7 @@ function on_message(self, message_id, message, sender)
     end
 
     if message_id == hash("restart_game") then 
-        state.init_state()
+        game_manager.restart_game()
         scene_manager.unload_scene("#game_over_proxy")
         scene_manager.load_level("#level_1_proxy")
     end

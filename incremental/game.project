@@ -23,6 +23,9 @@ scale_mode = stretch
 [project]
 title = Empty Project
 dependencies#0 = https://github.com/Insality/defold-log/archive/refs/tags/6.zip
+dependencies#1 = https://github.com/Insality/asset-store/archive/refs/tags/3.zip
+dependencies#2 = https://github.com/Insality/defold-event/archive/refs/tags/16.zip
+dependencies#3 = https://github.com/Insality/druid/archive/refs/tags/1.2.3.zip
 
 [sprite]
 max_count = 256

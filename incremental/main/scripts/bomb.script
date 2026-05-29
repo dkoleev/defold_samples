@@ -13,10 +13,13 @@ function init(self)
 end
 
 local function explode(self)
+    local diff_mult = state.game_difficulty
+    local damage = state.player_stats.bomb_damage / diff_mult
+
     for _, enemy in pairs(self.enemies_in_range) do
         if go.exists(enemy) then
             msg.post(enemy, "damage", {
-                damage = state.player_stats.bomb_damage,
+                damage = damage,
                 source = "bomb"
             })
         end

@@ -10,6 +10,18 @@ key_trigger {
   input: KEY_S
   action: "change_game_speed"
 }
+key_trigger {
+  input: KEY_P
+  action: "pause_game"
+}
+key_trigger {
+  input: KEY_M
+  action: "switch_music"
+}
+key_trigger {
+  input: KEY_N
+  action: "switch_sfx"
+}
 mouse_trigger {
   input: MOUSE_BUTTON_LEFT
   action: "left_click"

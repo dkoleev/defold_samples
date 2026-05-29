@@ -76,8 +76,9 @@ function on_message(self, message_id, message, sender)
     if message_id == hash("trigger_response") then
         -- game_utils.print_table(message)
         if message.other_group == hash("island") then
+            local final_damage = self.damage * state.game_difficulty
             msg.post(message.other_id, "damage", {
-                damage = self.damage,
+                damage = final_damage,
                 source = "ship"
             })
             go.delete()

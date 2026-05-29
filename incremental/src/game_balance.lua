@@ -3,8 +3,8 @@ local difficulty_type = require("src.difficulty_type")
 
 local M = {
     default_game_settings = {
-        music_on = false,
-        sound_fx_on = false,
+        music_on = true,
+        sound_fx_on = true,
         difficulty = 2
     },
     base_player_stats = {
@@ -15,8 +15,8 @@ local M = {
         bomb_interval = 3,
         bomb_damage = 20,
         bomb_speed = 100,
-        max_hp = 100,
-        hp = 10,
+        max_hp = 1000,
+        hp = 500,
         hp_regen = 2,
         hp_regen_interval = 2,
         gold_amount = 100,

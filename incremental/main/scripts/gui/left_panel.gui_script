@@ -1,3 +1,4 @@
+local sound_manager = require("src.sound_manager")
 local state = require("src.game_state")
 local balance = require("src.game_balance")
 local skill_type = require("src.skill_type")
@@ -172,6 +173,7 @@ function on_input(self, action_id, action)
                 gui.set_scale(value.button, vmath.vector3(1.1))
 
                 if action_id == hash("left_click") and action.pressed and gui.is_enabled(value.button) then
+                    sound_manager.click_sfx()          
                     if key == "unlock_bomb" and state.player_stats.gold_amount >= state.skill_costs[key] then
                         state.player_stats.gold_amount = state.player_stats.gold_amount - state.skill_costs[key]
                         state.player_stats.bomb_unlocked = true
